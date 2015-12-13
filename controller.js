@@ -1,44 +1,51 @@
 /**
- * Created by javi on 25/11/15.
- */
-angular.module('gameApp',[])
-    .controller("ChatController",function($scope){
-        var socket = io.connect();
+* Created by javi on 25/11/15.
+*/
+  var socket = io.connect();
 
-        $scope.messages = [];
-        $scope.roster = [];
-        $scope.name = '';
-        $scope.text = '';
+  var messages = [];
+  var roster = [];
+  var name = '';
+  var text = '';
 
-        socket.on('connect', function () {
-            $scope.setName();
-        });
+  socket.on('connect', function () {
+    //setName();
+  });
 
-        socket.on('message', function (msg) {
-            $scope.messages.push(msg);
-            $scope.$apply();
-        });
+  socket.on('message', function (msg) {
+    messages.push(msg);
+    messages=$scope.messages.slice(-5);
 
-        socket.on('roster', function (names) {
-            $scope.roster = names;
-            $scope.$apply();
-        });
+  });
 
-        $scope.send = function send() {
-            console.log('Sending message:', $scope.text);
-            socket.emit('message', $scope.text);
-            $scope.text = '';
-        };
+  socket.on('roster', function (names) {
+    roster = names;
 
-        $scope.sendPosition = function sendPosition(x) {
-            console.log('Sending message:', x);
-            socket.emit('message', x);
+  });
 
-        };
+  socket.on('position', function(msg){
+    if(msg.name==name){
+      //It's me, do nothing
+    } else{
+      setPosition(msg.position.x,msg.position.y);
 
-        $scope.setName = function setName() {
-            socket.emit('identify', $scope.name);
-        };
-    });
+    }
 
+  });
 
+   function send() {
+    console.log('Sending message:', text);
+    socket.emit('message', text);
+    text = '';
+  }
+
+   function sendPositionToServer(x,y) {
+    console.log('Sending message:', x);
+    socket.emit('position', {x:x, y:y});
+
+  }
+
+  function setName() {
+    console.log(name);
+    socket.emit('identify', name);
+  }
