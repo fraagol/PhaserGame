@@ -33,14 +33,19 @@
 
   });
 
+  socket.on('circle', function(msg){
+    console.log("received:",msg);
+    setCircleY(msg.y);
+      });
+
    function send() {
-    console.log('Sending message:', text);
+    //console.log('Sending message:', text);
     socket.emit('message', text);
     text = '';
   }
 
    function sendPositionToServer(x,y) {
-    console.log('Sending message:', x);
+  //  console.log('Sending message:', x);
     socket.emit('position', {x:x, y:y});
 
   }

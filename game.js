@@ -22,6 +22,7 @@ var platforms;
 var cursors;
 var player;
 var player2;
+var circle;
 
 var score = 0;
 var scoreText;
@@ -29,6 +30,10 @@ var myId;
 
 var lastx=0;
 var lasty=0;
+
+var color=0;
+
+var lineGraphics;
 
 function create () {
   myId=getRandomInt(0,1000);
@@ -79,6 +84,11 @@ function create () {
 
   scoreText = game.add.text(16, 16, 'score: 0  position.x= '+ player.body.x, { fontSize: '32px', fill: '#000' });
 
+
+ lineGraphics= game.add.graphics(0,0);
+ circle= game.add.graphics(30,30);
+ circle.beginFill(0xFF0000, 1);
+ circle.drawCircle(50,50,50);
 }
 
 function createPlayer(){
@@ -110,7 +120,10 @@ function createPlayer2(){
 }
 
 function update() {
-
+//circle.y++;
+lineGraphics.lineStyle(10, Phaser.Color.toRGBA(color++,256-color,color,1));
+if(color>256) color=0;
+lineGraphics.lineTo(player.body.x, player.body.y);
   //  Collide the player and the stars with the platforms
   game.physics.arcade.collide(player, platforms);
   game.physics.arcade.collide(platforms, platforms);
@@ -124,14 +137,14 @@ function update() {
   if (cursors.left.isDown)
   {
     //  Move to the left
-    player.body.velocity.x = -350;
+    player.body.velocity.x = -100;
 
     player.animations.play('left');
   }
   else if (cursors.right.isDown)
   {
     //  Move to the right
-    player.body.velocity.x = 350;
+    player.body.velocity.x = 100;
 
     player.animations.play('right');
   }
@@ -169,6 +182,13 @@ function setPosition(x,y){
 
 }
 
+function setCircleY(y){
+  console.log("setting circle y",y);
+  console.log(circle);
+  if(circle){
+  circle.y=y;
+  }
+}
 
 function collectStar (player, star) {
 
