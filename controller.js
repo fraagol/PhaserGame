@@ -33,9 +33,14 @@
 
   });
 
-  socket.on('circle', function(msg){
+  socket.on('circle1', function(msg){
     console.log("received:",msg);
     setCircleY(msg.y);
+      });
+
+  socket.on('circle2', function(msg){
+    console.log("received:",msg);
+    setCircleY2(msg.y);
       });
 
    function send() {

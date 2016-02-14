@@ -1,5 +1,4 @@
-/**
-* Created by javi on 25/11/15.
+/** * Created by javi on 25/11/15.
 */
 
 //window.onload = function() {
@@ -23,6 +22,7 @@ var cursors;
 var player;
 var player2;
 var circle;
+var circle2;
 
 var score = 0;
 var scoreText;
@@ -85,10 +85,14 @@ function create () {
   scoreText = game.add.text(16, 16, 'score: 0  position.x= '+ player.body.x, { fontSize: '32px', fill: '#000' });
 
 
- lineGraphics= game.add.graphics(0,0);
- circle= game.add.graphics(30,30);
+ lineGraphics= game.add.graphics(50,0);
+ circle= game.add.graphics(50,0);
  circle.beginFill(0xFF0000, 1);
- circle.drawCircle(50,50,50);
+ circle.drawCircle(0,0,50);
+
+ circle2= game.add.graphics(50,0);
+ circle2.beginFill(0xFF0000, 1);
+ circle2.drawCircle(0,0,50);
 }
 
 function createPlayer(){
@@ -187,6 +191,14 @@ function setCircleY(y){
   console.log(circle);
   if(circle){
   circle.y=y;
+  }
+}
+
+function setCircleY2(y){
+  console.log("setting circle2 y",y);
+  console.log(circle2);
+  if(circle2){
+  circle2.y=y;
   }
 }
 

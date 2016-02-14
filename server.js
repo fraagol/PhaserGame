@@ -19,28 +19,33 @@ var world = new p2.World({
     gravity:[0, -9.82]
 });
 
+  world.defaultContactMaterial.restitution = 0.8;
+
 // Create an empty dynamic body
 var circleBody = new p2.Body({
-    mass: 50,
+    mass: 1,
     position: [0, 600]
 });
 
 var circleBody2 = new p2.Body({
-    mass: 5,
-    position: [0, 90]
+    mass: 1,
+    position: [0, 1800]
 });
 
+var counter=0;
+var counterIteration=0;
+
 // Add a circle shape to the body.
-var circleShape = new p2.Circle({ radius: 1 });
+var circleShape = new p2.Circle({ radius: 25 });
 circleBody.addShape(circleShape);
 
-var circleShape2 = new p2.Circle({ radius: 1 });
+var circleShape2 = new p2.Circle({ radius: 25 });
 circleBody2.addShape(circleShape2);
 
 // ...and add the body to the world.
 // If we don't add it to the world, it won't be simulated.
 world.addBody(circleBody);
-//world.addBody(circleBody2);
+world.addBody(circleBody2);
 
 // Create an infinite ground plane.
 var groundBody = new p2.Body({
@@ -57,15 +62,29 @@ var timeStep = 1 / 60; // seconds
 
 // The "Game loop". Could be replaced by, for example, requestAnimationFrame.
 setInterval(function(){
-
+   counterIteration++;
+    circleBody.oldPositionY=circleBody.position[1];
+    circleBody2.oldPositionY=circleBody2.position[1];
     // The step method moves the bodies forward in time.
     world.step(timeStep);
 
     // Print the circle position to console.
     // Could be replaced by a render call.
-    console.log("Circle y position: " + circleBody.position[1]);
-broadcast("circle",{y:circleBody.position[1]});
-console.log("sent");
+if( counterIteration%10==0){
+    if (circleBody.position[1]!=circleBody.oldPositionY) {
+
+//  console.log("Circle1 y position: " + circleBody.position[1]);
+  broadcast("circle1",{y:circleBody.position[1]});
+
+//  console.log("sent");
+    }
+    if (circleBody2.position[1]!=circleBody2.oldPositionY) {
+
+//  console.log("Circle2 y position: " + circleBody2.position[1]);
+  broadcast("circle2",{y:circleBody2.position[1]});
+//  console.log("sent");
+    }
+  }
 }, 100 * timeStep);
 
 
@@ -136,7 +155,7 @@ function updateRoster() {
 }
 
 function broadcast(event, data) {
-  console.log("broadcast: "+ event+data);
+//  console.log("broadcast: "+ event+data);
   sockets.forEach(function (socket) {
     socket.emit(event, data);
   });
