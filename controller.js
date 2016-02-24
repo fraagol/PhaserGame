@@ -33,14 +33,9 @@
 
   });
 
-  socket.on('circle1', function(msg){
-    console.log("received:",msg);
-    setCircleY(msg.y);
-      });
-
-  socket.on('circle2', function(msg){
-    console.log("received:",msg);
-    setCircleY2(msg.y);
+  socket.on('circle', function(msg){
+    console.log("received0:",msg);
+    setCircle(msg);
       });
 
    function send() {
@@ -58,4 +53,9 @@
   function setName() {
     console.log(name);
     socket.emit('identify', name);
+  }
+
+  function newCircleSend(x,y){
+    console.log("creating new circle",x,y);
+    socket.emit('newCircle',{x:x, y:y});
   }

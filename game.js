@@ -16,13 +16,15 @@ function preload () {
 
 
 }
-
+var worldStarted=false;
 var platforms;
 var cursors;
 var player;
 var player2;
-var circle;
-var circle2;
+var circles=[];
+
+//Do not create to many circles
+var nextCircle=0;
 
 var score = 0;
 var scoreText;
@@ -76,6 +78,7 @@ function create () {
     //  Let gravity do its thing
     star.body.gravity.y = 200;
     star.body.velocity.x=-50+Math.random() *100;
+    star.body.collideWorldBounds=true;
 
     //  This just gives each star a slightly random bounce value
     star.body.bounce.y = 0.7 + Math.random() * 0.2;
@@ -86,13 +89,14 @@ function create () {
 
 
  lineGraphics= game.add.graphics(50,0);
- circle= game.add.graphics(50,0);
- circle.beginFill(0xFF0000, 1);
- circle.drawCircle(0,0,50);
+ worldStarted=true;
+ }
 
- circle2= game.add.graphics(50,0);
- circle2.beginFill(0xFF0000, 1);
- circle2.drawCircle(0,0,50);
+function createCircle() {
+  var c= game.add.graphics(50,50);
+  c.beginFill(0xFF0000, 1);
+  c.drawCircle(0,0,50);
+  circles.push(c);
 }
 
 function createPlayer(){
@@ -166,6 +170,14 @@ lineGraphics.lineTo(player.body.x, player.body.y);
     player.body.velocity.y = -350;
   }
 
+  if (game.input.activePointer.isDown && game.time.now > nextCircle)
+      {
+
+                nextCircle = game.time.now + 1000;
+
+
+          newCircleSend(game.input.mousePointer.x,game.input.mousePointer.y);
+      }
 
 
   sendPosition(player.body.x,player.body.y);
@@ -186,20 +198,20 @@ function setPosition(x,y){
 
 }
 
-function setCircleY(y){
-  console.log("setting circle y",y);
-  console.log(circle);
-  if(circle){
-  circle.y=y;
-  }
-}
+function setCircle(c){
+  if(worldStarted){
+  console.log("setting circle",c);
 
-function setCircleY2(y){
-  console.log("setting circle2 y",y);
-  console.log(circle2);
-  if(circle2){
-  circle2.y=y;
+  if(!circles[c.id]){
+    createCircle();
   }
+  circles[c.id].y=c.y;
+  circles[c.id].x=c.x;
+  }
+  else{
+    console.log("World not started");
+  }
+
 }
 
 function collectStar (player, star) {
