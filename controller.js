@@ -34,7 +34,8 @@
   });
 
   socket.on('circle', function(msg){
-    console.log("received0:",msg);
+    msg.y=convertY(msg.y);
+    console.log("received:",msg);
     setCircle(msg);
       });
 
@@ -57,5 +58,9 @@
 
   function newCircleSend(x,y){
     console.log("creating new circle",x,y);
-    socket.emit('newCircle',{x:x, y:y});
+    socket.emit('newCircle',{x:x, y:convertY(y)});
+  }
+
+  function convertY(y){
+    return consts.worldHeight-y;
   }

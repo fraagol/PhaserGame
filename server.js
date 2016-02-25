@@ -102,7 +102,6 @@ function updateRoster() {
 }
 
 function broadcast(event, data) {
-  console.log("broadcast: "+ event+data);
   sockets.forEach(function (socket) {
     socket.emit(event, data);
   });

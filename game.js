@@ -3,6 +3,12 @@
 
 //window.onload = function() {
 
+var consts={
+  worldWidh:800,
+  worldHeight:600,
+  gravity:-9.8
+};
+
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 function preload () {

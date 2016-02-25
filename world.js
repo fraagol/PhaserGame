@@ -11,10 +11,17 @@ module.exports={
 
 var circles=[];
 
+
+var consts={
+  worldWidh:800,
+  worldHeight:600,
+  gravity:-9.8
+};
+
 //P2 Physics
 // Create a physics world, where bodies and constraints live
 var world = new p2.World({
-    gravity:[0, -1.82]
+    gravity:[0, consts.gravity]
 });
   world.defaultContactMaterial.restitution = 1;
 
@@ -48,6 +55,16 @@ world.addBody(groundBody);
 var wallBody= new p2.Body({mass:0,angle: (3*Math.PI)/2});
 wallBody.addShape(new p2.Plane());
 world.addBody(wallBody);
+
+var wallBody2=new p2.Body({mass:0,angle: (Math.PI)/2,position:[consts.worldWidh,0]
+});
+wallBody2.addShape(new p2.Plane());
+world.addBody(wallBody2);
+
+var top=new p2.Body({mass:0,angle: (Math.PI),position:[0,consts.worldHeight]
+});
+top.addShape(new p2.Plane());
+world.addBody(top);
 
 // To get the trajectories of the bodies,
 // we must step the world forward in time.
