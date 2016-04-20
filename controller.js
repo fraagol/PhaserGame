@@ -1,66 +1,72 @@
 /**
-* Created by javi on 25/11/15.
-*/
-  var socket = io.connect();
+ * Created by javi on 25/11/15.
+ */
+var socket = io.connect();
 
-  var messages = [];
-  var roster = [];
-  var name = '';
-  var text = '';
+var messages = [];
+var roster = [];
+var name = '';
+var text = '';
 
-  socket.on('connect', function () {
-    //setName();
-  });
+socket.on('connect', function() {
+  //setName();
+});
 
-  socket.on('message', function (msg) {
-    messages.push(msg);
-    messages=$scope.messages.slice(-5);
+socket.on('message', function(msg) {
+  messages.push(msg);
+  messages = $scope.messages.slice(-5);
 
-  });
+});
 
-  socket.on('roster', function (names) {
-    roster = names;
+socket.on('roster', function(names) {
+  roster = names;
 
-  });
+});
 
-  socket.on('position', function(msg){
-    if(msg.name==name){
-      //It's me, do nothing
-    } else{
-      setPosition(msg.position.x,msg.position.y);
+socket.on('position', function(msg) {
+  if (msg.name == name) {
+    //It's me, do nothing
+  } else {
+    setPosition(msg.position.x, msg.position.y);
 
-    }
-
-  });
-
-  socket.on('circle', function(msg){
-    msg.y=convertY(msg.y);
-    console.log("received:",msg);
-    setCircle(msg);
-      });
-
-   function send() {
-    //console.log('Sending message:', text);
-    socket.emit('message', text);
-    text = '';
   }
 
-   function sendPositionToServer(x,y) {
+});
+
+socket.on('circle', function(msg) {
+  msg.y = convertY(msg.y);
+  //console.log("received:",msg);
+  setCircle(msg);
+});
+
+function send() {
+  //console.log('Sending message:', text);
+  socket.emit('message', text);
+  text = '';
+}
+
+function sendPositionToServer(x, y) {
   //  console.log('Sending message:', x);
-    socket.emit('position', {x:x, y:y});
+  socket.emit('position', {
+    x: x,
+    y: y
+  });
 
-  }
+}
 
-  function setName() {
-    console.log(name);
-    socket.emit('identify', name);
-  }
+function setName() {
+  console.log(name);
+  socket.emit('identify', name);
+}
 
-  function newCircleSend(x,y){
-    console.log("creating new circle",x,y);
-    socket.emit('newCircle',{x:x, y:convertY(y)});
-  }
+function newCircleSend(x, y) {
+  console.log("creating new circle", x, y);
+  socket.emit('newCircle', {
+    x: x,
+    y: convertY(y)
+  });
+}
 
-  function convertY(y){
-    return consts.worldHeight-y;
-  }
+function convertY(y) {
+  return consts.worldHeight - y;
+}
