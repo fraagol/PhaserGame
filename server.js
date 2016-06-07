@@ -1,7 +1,7 @@
 var http = require('http');
 var path = require('path');
 
-var world= require('./world');
+var world = require('./world');
 
 var async = require('async');
 var socketio = require('socket.io');
@@ -16,7 +16,7 @@ router.use(express.static(path.resolve(__dirname, '.')));
 
 world.init(broadcast);
 
-function hola(){
+function hola() {
   console.log("hola");
 }
 
@@ -24,26 +24,26 @@ function hola(){
 
 var messages = [];
 var sockets = [];
-var messageCounter=0;
+var messageCounter = 0;
 
-io.on('connection', function (socket) {
-  messages.forEach(function (data) {
+io.on('connection', function(socket) {
+  messages.forEach(function(data) {
     socket.emit('message', data);
   });
 
   sockets.push(socket);
 
-  socket.on('disconnect', function () {
+  socket.on('disconnect', function() {
     sockets.splice(sockets.indexOf(socket), 1);
     updateRoster();
   });
 
-  socket.on('message', function (msg) {
+  socket.on('message', function(msg) {
     console.log("message");
     var text = String(msg || '');
 
     if (!text)
-    return;
+      return;
 
 
     var data = {
@@ -55,8 +55,8 @@ io.on('connection', function (socket) {
 
   });
 
-  socket.on('position', function (msg) {
-    console.log(messageCounter++ +" "+socket.name+" "+JSON.stringify(msg));
+  socket.on('position', function(msg) {
+    //console.log(messageCounter++ +" "+socket.name+" "+JSON.stringify(msg));
     var data = {
       name: socket.name,
       position: msg
@@ -67,21 +67,22 @@ io.on('connection', function (socket) {
   });
 
 
-  socket.on('newCircle', function (msg) {
-    console.log("newCircle received",messageCounter++ +" "+socket.name+" "+JSON.stringify(msg));
+  socket.on('newCircle', function(msg) {
+    console.log("newCircle received", messageCounter++ + " " + socket.name +
+      " " + JSON.stringify(msg));
     var data = {
       name: socket.name,
       position: msg
     };
 
-    world.createCircle(msg.x,msg.y);
+    world.createCircle(msg.x, msg.y);
 
   });
 
 
-  socket.on('identify', function (name) {
-    socket.name=String(name || 'Anonymous');
-    console.log(name+" entered")
+  socket.on('identify', function(name) {
+    socket.name = String(name || 'Anonymous');
+    console.log(name + " entered")
     updateRoster();
 
 
@@ -91,24 +92,24 @@ io.on('connection', function (socket) {
 function updateRoster() {
   async.map(
     sockets,
-    function (socket, callback) {
+    function(socket, callback) {
       callback(socket.name);
       //socket.get('name', callback);
     },
-    function (err, names) {
+    function(err, names) {
       broadcast('roster', names);
     }
   );
 }
 
 function broadcast(event, data) {
-  sockets.forEach(function (socket) {
+  sockets.forEach(function(socket) {
     socket.emit(event, data);
   });
 }
 
 
-server.listen(process.env.PORT||3000, process.env.IP||"localhost", function(){
+server.listen(process.env.PORT || 3000, process.env.IP || "localhost", function() {
   var addr = server.address();
   console.log("Chat server listening at", addr.address + ":" + addr.port);
 });

@@ -15,23 +15,25 @@ var circles = [];
 var consts = {
   worldWidh: 800,
   worldHeight: 600,
-  gravity: -9.8
+  gravity: 0 //-9.8
 };
 
 //P2 Physics
 // Create a physics world, where bodies and constraints live
 var world = new p2.World({
-  gravity: [0, consts.gravity]
+  gravity: [0, 0],
+  frictionGravity: 0
 });
 world.defaultContactMaterial.restitution = 1;
 
-createCircle(50, 600);
-createCircle(55, 1000);
+createCircle(100, 200);
+//createCircle(300, 1000);
 
 function createCircle(x, y) {
   var circleBody = new p2.Body({
-    mass: 1,
-    position: [x, y]
+    mass: 0.1,
+    position: [x, y],
+    velocity: [0, 0]
   });
 
   var circleShape = new p2.Circle({
@@ -40,6 +42,7 @@ function createCircle(x, y) {
   circleBody.addShape(circleShape);
   world.addBody(circleBody);
   circles.push(circleBody);
+  console.log(circleBody);
 }
 
 var counter = 0;
@@ -87,31 +90,45 @@ setInterval(function() {
   counterIteration++;
   for (var i = 0; i < circles.length; i++) {
     var circle = circles[i];
+    //console.log(circle);
     circle.oldPositionY = circle.position[1];
     circle.oldPositionX = circle.position[0];
+
   }
   // The step method moves the bodies forward in time.
+  //console.log("before", timeMS());
   world.step(timeStep);
+  //console.log("after", timeMS());
 
 
-  if (counterIteration % 10 == 0) {
-    for (var i = 0; i < circles.length; i++) {
-      var circle = circles[i];
-      if (circle.position[1] != circle.oldPositionY ||
-        circle.position[0] != circle.oldPositionX) {
+  //if (counterIteration % 10 == 0) {
+  for (var i = 0; i < circles.length; i++) {
+    var circle = circles[i];
+    if (circle.position[1] != circle.oldPositionY ||
+      circle.position[0] != circle.oldPositionX) {}
+    //  console.log("Circle1 y position: " + circleBody.position[1]);
+    var data = {
+      id: i,
+      x: circle.position[0],
+      y: circle.position[1]
+    };
 
-        //  console.log("Circle1 y position: " + circleBody.position[1]);
-        var data = {
-          id: i,
-          x: circle.position[0],
-          y: circle.position[1]
-        };
-        broadcast("circle", data);
 
-      }
-    }
+
+    broadcast("circle", data);
   }
+  //  }
 
 
 
-}, 100 * timeStep);
+}, 1000 * timeStep);
+
+// Get current time, in seconds.
+function timeSeconds() {
+  return timeMS() / 1000;
+}
+
+// Get current time, in milliseconds.
+function timeMS() {
+  return new Date().getTime();
+}
