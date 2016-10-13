@@ -2,7 +2,7 @@ var http = require('http');
 var path = require('path');
 
 var world = require('./world');
-
+var safe= require('safe-eval');
 var async = require('async');
 var socketio = require('socket.io');
 var express = require('express');
@@ -14,10 +14,19 @@ var io = socketio.listen(server);
 
 router.use(express.static(path.resolve(__dirname, '.')));
 
+router.get('/hola',function(req,res){
+  var text=req.query.text;
+  console.log(text);
+  var d= safe(text,{h:hola,w:world});
+  console.log(d);
+  res.send('Holaaa '+d);
+});
+
 world.init(broadcast);
 
 function hola() {
   console.log("hola");
+  return 3;
 }
 
 
@@ -88,6 +97,7 @@ io.on('connection', function(socket) {
 
   });
 });
+
 
 function updateRoster() {
   async.map(
