@@ -42,7 +42,7 @@ function createCircle(x, y) {
   circleBody.addShape(circleShape);
   world.addBody(circleBody);
   circles.push(circleBody);
-  console.log(circleBody);
+  //console.log(circleBody);
 }
 
 var counter = 0;

@@ -8,6 +8,16 @@
   body {
     padding-top: 60px;
   }
+  #editor {
+        margin: 0;
+
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height:500px;
+		width: 80%;
+    }
   </style>
   <!--
   <script src="bower_components/socket.io-client/socket.io.js"></script>
@@ -17,11 +27,13 @@
 <script src="game.js"></script>
 <script src="controller.js"></script>
 <script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/ace-builds/src/ace.js"></script>
+<script src="bower_components/ace-builds/src/mode-javascript.js"></script>
 
 </head>
 <body>
+<pre id="editor"></pre>
 
-<textarea id="textId"rows="10"></textarea>
 <button onclick="sendText()">send</button>
   </body>
 
@@ -30,14 +42,20 @@
 function sendText(){
   var text=document.getElementById("textId");
 
-  $.ajax("/hola",{
+  $.ajax("/sendJS",{
 
-       data:{text:text.value}
+       data:{text:editor.getValue()}
    }).then(function(data) {
       console.log(data);
 
    });
 }
+</script>
+
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/solarized_dark");
+    editor.session.setMode("ace/mode/javascript");
 </script>
 
 <script>

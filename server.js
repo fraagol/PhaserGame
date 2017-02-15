@@ -14,7 +14,7 @@ var io = socketio.listen(server);
 
 router.use(express.static(path.resolve(__dirname, '.')));
 
-router.get('/hola',function(req,res){
+router.get('/sendJS',function(req,res){
   var text=req.query.text;
   console.log(text);
   var d= safe(text,{h:hola,w:world});
@@ -25,7 +25,7 @@ router.get('/hola',function(req,res){
 world.init(broadcast);
 
 function hola() {
-  console.log("hola");
+  console.log("hola3");
   return 3;
 }
 
