@@ -25,14 +25,14 @@ router.get('/sendJS',function(req,res){
 world.init(broadcast);
 
 function hola() {
-  console.log("hola3");
+  console.log("hola");
   return 3;
 }
 
 
-
+ 
 var messages = [];
-var sockets = [];
+var sockets = []; 
 var messageCounter = 0;
 
 io.on('connection', function(socket) {

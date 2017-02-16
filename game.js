@@ -193,7 +193,7 @@ function update() {
 
   scoreText.text = 'FPS: ' + game.time.fps;
 
-
+ 
 }
 
 function setPosition(x, y) {

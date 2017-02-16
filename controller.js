@@ -1,4 +1,4 @@
-/**
+ /**
  * Created by javi on 25/11/15.
  */
 var socket = io.connect();
