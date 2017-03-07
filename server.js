@@ -6,11 +6,20 @@ var safe= require('safe-eval');
 var async = require('async');
 var socketio = require('socket.io');
 var express = require('express');
-
+var C= require('./constants');
 
 var router = express();
 var server = http.createServer(router);
 var io = socketio.listen(server);
+
+router.get('/constants', function(req,res){
+  console.log(JSON.stringify(C));
+var msg= 'var C='+JSON.stringify(C)+';';
+console.log(msg);
+
+ res.send(msg);
+  });
+
 
 router.use(express.static(path.resolve(__dirname, '.')));
 
@@ -30,9 +39,9 @@ function hola() {
 }
 
 
- 
+
 var messages = [];
-var sockets = []; 
+var sockets = [];
 var messageCounter = 0;
 
 io.on('connection', function(socket) {
@@ -64,17 +73,6 @@ io.on('connection', function(socket) {
 
   });
 
-  socket.on('position', function(msg) {
-    //console.log(messageCounter++ +" "+socket.name+" "+JSON.stringify(msg));
-    var data = {
-      name: socket.name,
-      position: msg
-    };
-
-    broadcast('position', data);
-
-  });
-
 
   socket.on('newCircle', function(msg) {
     console.log("newCircle received", messageCounter++ + " " + socket.name +
@@ -94,10 +92,8 @@ io.on('connection', function(socket) {
     console.log(name + " entered")
     updateRoster();
 
-
   });
 });
-
 
 function updateRoster() {
   async.map(

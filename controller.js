@@ -23,35 +23,21 @@ socket.on('roster', function(names) {
 
 });
 
-socket.on('position', function(msg) {
-  if (msg.name == name) {
-    //It's me, do nothing
-  } else {
-    setPosition(msg.position.x, msg.position.y);
-
-  }
-
-});
-
 socket.on('circle', function(msg) {
   msg.y = convertY(msg.y);
   //console.log("received:",msg);
   setCircle(msg);
 });
 
+socket.on('ball', function(msg) {
+  msg.y = convertY(msg.y);
+  setBall(msg);
+});
+
 function send() {
   //console.log('Sending message:', text);
   socket.emit('message', text);
   text = '';
-}
-
-function sendPositionToServer(x, y) {
-  //  console.log('Sending message:', x);
-  socket.emit('position', {
-    x: x,
-    y: y
-  });
-
 }
 
 function setName() {
@@ -68,5 +54,5 @@ function newCircleSend(x, y) {
 }
 
 function convertY(y) {
-  return consts.worldHeight - y;
+  return C.worldHeight - y;
 }

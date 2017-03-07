@@ -1,5 +1,5 @@
 var p2 = require('p2');
-
+var C= require('./constants')
 var broadcast;
 
 module.exports = {
@@ -10,24 +10,42 @@ module.exports = {
 };
 
 var circles = [];
+var ball;
 
+console.log(C.worldWidth);
+console.log(C.worldHeight);
 
-var consts = {
-  worldWidh: 800,
-  worldHeight: 600,
-  gravity: 0 //-9.8
-};
 
 //P2 Physics
 // Create a physics world, where bodies and constraints live
 var world = new p2.World({
   gravity: [0, 0],
-  frictionGravity: 0
+  frictionGravity: 1
 });
 world.defaultContactMaterial.restitution = 1;
 
 createCircle(100, 200);
-//createCircle(300, 1000);
+createCircle(300, 400);
+createCircle(50, 50);
+createBall(200,300);
+
+
+function createBall(x, y) {
+  var b = new p2.Body({
+    mass: 0.1,
+    position: [x, y],
+    velocity: [0, 0]
+  });
+
+  var circleShape = new p2.Circle({
+    radius: C.ballRadius
+  });
+  b.addShape(circleShape);
+  world.addBody(b);
+  ball=b;
+
+}
+
 
 function createCircle(x, y) {
   var circleBody = new p2.Body({
@@ -37,12 +55,12 @@ function createCircle(x, y) {
   });
 
   var circleShape = new p2.Circle({
-    radius: 25
+    radius: C.playerRadius
   });
   circleBody.addShape(circleShape);
   world.addBody(circleBody);
   circles.push(circleBody);
-  //console.log(circleBody);
+
 }
 
 var counter = 0;
@@ -67,7 +85,7 @@ world.addBody(wallBody);
 var wallBody2 = new p2.Body({
   mass: 0,
   angle: (Math.PI) / 2,
-  position: [consts.worldWidh, 0]
+  position: [C.worldWidth, 0]
 });
 wallBody2.addShape(new p2.Plane());
 world.addBody(wallBody2);
@@ -75,7 +93,7 @@ world.addBody(wallBody2);
 var top = new p2.Body({
   mass: 0,
   angle: (Math.PI),
-  position: [0, consts.worldHeight]
+  position: [0, C.worldHeight]
 });
 top.addShape(new p2.Plane());
 world.addBody(top);
@@ -88,37 +106,41 @@ var timeStep = 1 / 60; // seconds
 // The "Game loop". Could be replaced by, for example, requestAnimationFrame.
 setInterval(function() {
   counterIteration++;
+  //console.log("before", timeMS());
+var S=5;
   for (var i = 0; i < circles.length; i++) {
     var circle = circles[i];
-    //console.log(circle);
-    circle.oldPositionY = circle.position[1];
-    circle.oldPositionX = circle.position[0];
-
+    var forceX=ball.position[0]-circle.position[0];
+    forceX=forceX>S?S:forceX<-S?-S:forceX;
+    var forceY=ball.position[1]-circle.position[1];
+    forceY=forceY>S?S:forceY<-S?-S:forceY;
+    circle.force[0]=forceX;
+    circle.force[1]=forceY;
   }
-  // The step method moves the bodies forward in time.
-  //console.log("before", timeMS());
+
   world.step(timeStep);
   //console.log("after", timeMS());
 
-
-  //if (counterIteration % 10 == 0) {
   for (var i = 0; i < circles.length; i++) {
     var circle = circles[i];
-    if (circle.position[1] != circle.oldPositionY ||
-      circle.position[0] != circle.oldPositionX) {}
-    //  console.log("Circle1 y position: " + circleBody.position[1]);
     var data = {
       id: i,
       x: circle.position[0],
       y: circle.position[1]
     };
 
-
-
     broadcast("circle", data);
   }
   //  }
 
+//send ball position
+var data = {
+
+  x: ball.position[0],
+  y: ball.position[1]
+};
+
+broadcast("ball", data);
 
 
 }, 1000 * timeStep);
