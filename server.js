@@ -7,7 +7,8 @@ var async = require('async');
 var socketio = require('socket.io');
 var express = require('express');
 var C= require('./constants');
-
+var player1= require('./player1')
+var player2= require('./player2')
 var router = express();
 var server = http.createServer(router);
 var io = socketio.listen(server);
@@ -30,8 +31,9 @@ router.get('/sendJS',function(req,res){
   console.log(d);
   res.send('Holaaa '+d);
 });
-
-world.init(broadcast);
+console.log(5555555555);
+console.log(player1);
+world.init(broadcast,player1,player2);
 
 function hola() {
   console.log("hola");
@@ -83,6 +85,18 @@ io.on('connection', function(socket) {
     };
 
     world.createCircle(msg.x, msg.y);
+
+  });
+
+  socket.on('newBallPosition', function(msg) {
+    console.log("newBallPosition received", messageCounter++ + " " + socket.name +
+      " " + JSON.stringify(msg));
+    var data = {
+      name: socket.name,
+      position: msg
+    };
+
+    world.newBallPosition(msg.x, msg.y);
 
   });
 

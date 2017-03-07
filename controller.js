@@ -45,6 +45,9 @@ function setName() {
   socket.emit('identify', name);
 }
 
+function newBallPosition(x,y){
+  socket.emit('newBallPosition',{x:x, y:convertY(y)});
+}
 function newCircleSend(x, y) {
   console.log("creating new circle", x, y);
   socket.emit('newCircle', {

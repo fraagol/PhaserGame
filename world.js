@@ -1,20 +1,28 @@
 var p2 = require('p2');
 var C= require('./constants')
 var broadcast;
-
+var pl1;
+var pl2;
+console.log(111111111);
+console.log(pl1);
 module.exports = {
-  init: function(f) {
+  init: function(f, player1,player2) {
+
     broadcast = f;
+    pl1=player1;
+    pl2=player2;
+    console.log(222222222);
+    console.log(player2);
+    createCircle(200, 300, pl1);
+    createCircle(800, 300,pl2);
   },
-  createCircle: createCircle
+  createCircle: createCircle,
+  newBallPosition: newBallPosition
 };
 
+console.log(333333333);
 var circles = [];
 var ball;
-
-console.log(C.worldWidth);
-console.log(C.worldHeight);
-
 
 //P2 Physics
 // Create a physics world, where bodies and constraints live
@@ -24,9 +32,8 @@ var world = new p2.World({
 });
 world.defaultContactMaterial.restitution = 1;
 
-createCircle(100, 200);
-createCircle(300, 400);
-createCircle(50, 50);
+
+
 createBall(200,300);
 
 
@@ -46,8 +53,13 @@ function createBall(x, y) {
 
 }
 
+function newBallPosition(x,y){
+  ball.position[0]=x;
+  ball.position[1]=y;
+}
 
-function createCircle(x, y) {
+function createCircle(x, y,player) {
+    player = typeof player !== 'undefined' ? player : pl1;
   var circleBody = new p2.Body({
     mass: 0.1,
     position: [x, y],
@@ -59,6 +71,8 @@ function createCircle(x, y) {
   });
   circleBody.addShape(circleShape);
   world.addBody(circleBody);
+  console.log(player);
+  circleBody.player=player;
   circles.push(circleBody);
 
 }
@@ -107,16 +121,23 @@ var timeStep = 1 / 60; // seconds
 setInterval(function() {
   counterIteration++;
   //console.log("before", timeMS());
-var S=5;
+var S=100;
   for (var i = 0; i < circles.length; i++) {
     var circle = circles[i];
-    var forceX=ball.position[0]-circle.position[0];
-    forceX=forceX>S?S:forceX<-S?-S:forceX;
-    var forceY=ball.position[1]-circle.position[1];
-    forceY=forceY>S?S:forceY<-S?-S:forceY;
-    circle.force[0]=forceX;
-    circle.force[1]=forceY;
-  }
+  //   var forceX=ball.position[0]-circle.position[0];
+  //   forceX=forceX>S?S:forceX<-S?-S:forceX;
+  //   var forceY=ball.position[1]-circle.position[1];
+  //   forceY=forceY>S?S:forceY<-S?-S:forceY;
+  //   circle.force[0]=forceX;
+  //   circle.force[1]=forceY;
+  //
+
+  var action=circle.player.action(ball.position[0],ball.position[1]);
+  var angle = Math.atan2(action.y - circle.position[1], action.x - circle.position[0]);
+
+   circle.velocity[0]= S*Math.cos(angle);
+   circle.velocity[1]= S*Math.sin(angle);
+}
 
   world.step(timeStep);
   //console.log("after", timeMS());

@@ -40,13 +40,28 @@ function create() {
 
 
   cursors = game.input.keyboard.createCursorKeys();
+  //disable rigth click
+  game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
 
+
+  game.input.mousePointer.rightButton.onDown.add(onRightDown, this);
+  game.input.mousePointer.leftButton.onDown.add(onLeftDown, this);
   // circlesGroup = game.add.physicsGroup(Phaser.Physics.P2JS);
 
   scoreText = game.add.text(16, 16, 'score: 0  position.x= ' , {
     fontSize: '18px',
     fill: '#999'
   });
+
+
+function onRightDown(){
+    newCircleSend(game.input.mousePointer.x, game.input.mousePointer.y);
+  }
+
+function onLeftDown(){
+    newBallPosition(game.input.mousePointer.x, game.input.mousePointer.y);
+}
+
 
 createBall();
   worldStarted = true;
@@ -68,10 +83,7 @@ function createCircle() {
 }
 
 function update() {
-  if (game.input.activePointer.isDown && game.time.now > nextCircle) {
-    nextCircle = game.time.now + 1000;
-    newCircleSend(game.input.mousePointer.x, game.input.mousePointer.y);
-  }
+
   scoreText.text = 'FPS: ' + game.time.fps;
 }
 
