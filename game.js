@@ -14,7 +14,7 @@ function preload() {
 var worldStarted = false;
 var cursors;
 var circles = [];
-var circlesGroup;
+var ownerCircle;
 var ball=null;
 //Do not create to many circles
 var nextCircle = 0;
@@ -29,11 +29,9 @@ function create() {
   myId = getRandomInt(0, 1000);
   name = myId;
   setName();
-  console.log(myId);
+
 
   game.time.advancedTiming = true;
-  game.physics.startSystem(Phaser.Physics.P2JS);
-  game.physics.p2.restition = 1;
   var field = game.add.sprite(0, 0, 'field');
   field.height = game.height;
   field.width = game.width;
@@ -42,16 +40,15 @@ function create() {
   cursors = game.input.keyboard.createCursorKeys();
   //disable rigth click
   game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
-
-
-  game.input.mousePointer.rightButton.onDown.add(onRightDown, this);
+game.input.mousePointer.rightButton.onDown.add(onRightDown, this);
   game.input.mousePointer.leftButton.onDown.add(onLeftDown, this);
-  // circlesGroup = game.add.physicsGroup(Phaser.Physics.P2JS);
 
   scoreText = game.add.text(16, 16, 'score: 0  position.x= ' , {
     fontSize: '18px',
     fill: '#999'
   });
+
+
 
 
 function onRightDown(){
@@ -64,6 +61,11 @@ function onLeftDown(){
 
 
 createBall();
+ownerCircle=game.add.graphics(-50, -50);
+ownerCircle.beginFill(0x00FF00, 1);
+ownerCircle.drawCircle(0, 0, C.playerRadius*2.5);
+game.world.bringToTop(ownerCircle);
+
   worldStarted = true;
 }
 
@@ -74,45 +76,58 @@ function createBall(){
   ball=b;
 }
 
-function createCircle() {
-  var c = game.add.graphics(50, 50);
-  c.beginFill(0xFF0000, 1);
+function createCircle(circle) {
+  var c = game.add.graphics(circle.x, circle.y);
+  c.beginFill(circle.id%2==0?0xFF0000:0x0000FF, 1);
   c.drawCircle(0, 0, C.playerRadius*2);
-  c.drawRect(-5,0,10,-C.playerRadius*1.25);
+  c.drawRect(0,-4,C.playerRadius*1.25,8);
+  c.playerText = game.add.text(16, 16, circle.name , {
+      fontSize: '16px',
+      fill: '#EEEEEE'
+    });
   circles.push(c);
 }
 
 function update() {
+scoreText.text = 'FPS: ' + game.time.fps;
+circles.forEach(function (c){
+                  c.playerText.x=c.x;
+                  c.playerText.y=c.y;
+                  game.world.bringToTop(c.playerText);});
 
-  scoreText.text = 'FPS: ' + game.time.fps;
+
+//console.log(playerText);
 }
 
-function setBall(b){ if (worldStarted){
 
-    if(!ball){
-      createBall();
-      }
-
+function setBall(b){
+  if (worldStarted){
     ball.y=b.y;
     ball.x=b.x;
-
   }else{
     console.log("World not started for ball");
   }
-
 }
 
 function setCircle(c) {
   if (worldStarted) {
 
     if (!circles[c.id]) {
-      createCircle();
+      createCircle(c);
     }
     var circle=circles[c.id];
     circle.y = c.y;
     circle.x = c.x;
-    var angle = Math.atan2(ball.y - circle.y, ball.x - circle.x);
-    circle.rotation = angle + game.math.degToRad(90);
+    //var angle = Math.atan2(ball.y - circle.y, ball.x - circle.x);
+    circle.rotation = -c.angle;//+ game.math.degToRad(90);
+    if(c.owner){
+      ownerCircle.x=c.x;
+      ownerCircle.y=c.y;
+      setBall({x:c.x+(Math.cos(-c.angle)*C.playerRadius*1.5),
+              y:c.y+(Math.sin(-c.angle)*C.playerRadius*1.5)});
+
+    }
+
   } else {
     console.log("World not started");
   }

@@ -3,25 +3,8 @@
  */
 var socket = io.connect();
 
-var messages = [];
-var roster = [];
 var name = '';
 var text = '';
-
-socket.on('connect', function() {
-  //setName();
-});
-
-socket.on('message', function(msg) {
-  messages.push(msg);
-  messages = $scope.messages.slice(-5);
-
-});
-
-socket.on('roster', function(names) {
-  roster = names;
-
-});
 
 socket.on('circle', function(msg) {
   msg.y = convertY(msg.y);
@@ -35,7 +18,7 @@ socket.on('ball', function(msg) {
 });
 
 function send() {
-  //console.log('Sending message:', text);
+  //console.log('Sending message:', text)<;
   socket.emit('message', text);
   text = '';
 }

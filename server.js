@@ -7,72 +7,38 @@ var async = require('async');
 var socketio = require('socket.io');
 var express = require('express');
 var C= require('./constants');
-var player1= require('./player1')
-var player2= require('./player2')
 var router = express();
 var server = http.createServer(router);
 var io = socketio.listen(server);
 
-router.get('/constants', function(req,res){
-  console.log(JSON.stringify(C));
-var msg= 'var C='+JSON.stringify(C)+';';
-console.log(msg);
-
- res.send(msg);
-  });
-
-
 router.use(express.static(path.resolve(__dirname, '.')));
-
-router.get('/sendJS',function(req,res){
-  var text=req.query.text;
-  console.log(text);
-  var d= safe(text,{h:hola,w:world});
-  console.log(d);
-  res.send('Holaaa '+d);
-});
-console.log(5555555555);
-console.log(player1);
-world.init(broadcast,player1,player2);
-
-function hola() {
-  console.log("hola");
-  return 3;
-}
+var team=0;
+var players=[require('./player1')({x:300,y:310,speed:150,team:(team++)%2,name:"piojo"}),
+            require('./player1')({x:700,y:300,speed:100,team:(team++)%2,name:"xavi"}),
+            require('./player2')({x:150,y:200,speed:200,team:(team++)%2,name:"ayala"}),
+            require('./player2')({x:850,y:200,speed:200,team:(team++)%2,name:"villa"}),
+            require('./player2')({x:150,y:400,speed:100,team:(team++)%2,name:"iniesta"}),
+            require('./player2')({x:850,y:400,speed:150,team:(team++)%2,name:"drenthe"}),
+            require('./player2')({x:100,y:300,speed:100,team:(team++)%2,name:"albelda"}),
+            require('./player2')({x:900,y:300,speed:100,team:(team++)%2,name:"raul"})
+];
 
 
 
-var messages = [];
+
+world.init(broadcast,players);
+
+world.start();
+
+
 var sockets = [];
 var messageCounter = 0;
 
 io.on('connection', function(socket) {
-  messages.forEach(function(data) {
-    socket.emit('message', data);
-  });
-
   sockets.push(socket);
 
   socket.on('disconnect', function() {
     sockets.splice(sockets.indexOf(socket), 1);
-    updateRoster();
-  });
-
-  socket.on('message', function(msg) {
-    console.log("message");
-    var text = String(msg || '');
-
-    if (!text)
-      return;
-
-
-    var data = {
-      name: socket.name,
-      text: text
-    };
-
-    broadcast('message', data);
-
   });
 
 
@@ -84,7 +50,7 @@ io.on('connection', function(socket) {
       position: msg
     };
 
-    world.createCircle(msg.x, msg.y);
+    world.createCircle(null,msg.x, msg.y);
 
   });
 
@@ -96,31 +62,15 @@ io.on('connection', function(socket) {
       position: msg
     };
 
-    world.newBallPosition(msg.x, msg.y);
+    world.newBallPosition( msg.x, msg.y);
 
   });
-
 
   socket.on('identify', function(name) {
     socket.name = String(name || 'Anonymous');
     console.log(name + " entered")
-    updateRoster();
-
-  });
+    });
 });
-
-function updateRoster() {
-  async.map(
-    sockets,
-    function(socket, callback) {
-      callback(socket.name);
-      //socket.get('name', callback);
-    },
-    function(err, names) {
-      broadcast('roster', names);
-    }
-  );
-}
 
 function broadcast(event, data) {
   sockets.forEach(function(socket) {
@@ -128,6 +78,21 @@ function broadcast(event, data) {
   });
 }
 
+router.get('/constants', function(req,res){
+var msg= 'var C='+JSON.stringify(C)+';';
+ res.send(msg);
+  });
+
+  router.get('/sendJS',function(req,res){
+    var text=req.query.text;
+    var d= safe(text,{h:hola,w:world});
+    res.send('Holaaa '+d);
+  });
+
+  function hola() {
+    console.log("hola");
+    return 3;
+  }
 
 server.listen(process.env.PORT || 3000, process.env.IP || "localhost", function() {
   var addr = server.address();
