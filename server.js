@@ -16,11 +16,11 @@ var team=0;
 var players=[require('./player1')({x:300,y:310,speed:150,team:(team++)%2,name:"piojo"}),
             require('./player1')({x:700,y:300,speed:100,team:(team++)%2,name:"xavi"}),
             require('./player2')({x:150,y:200,speed:200,team:(team++)%2,name:"ayala"}),
-            require('./player2')({x:850,y:200,speed:200,team:(team++)%2,name:"villa"}),
+            require('./player2')({x:850,y:200,speed:200,team:(team++)%2,name:"iniesta"}),
             require('./player2')({x:150,y:400,speed:100,team:(team++)%2,name:"iniesta"}),
-            require('./player2')({x:850,y:400,speed:150,team:(team++)%2,name:"drenthe"}),
+            require('./player2')({x:850,y:400,speed:150,team:(team++)%2,name:"aurea"}),
             require('./player2')({x:100,y:300,speed:100,team:(team++)%2,name:"albelda"}),
-            require('./player2')({x:900,y:300,speed:100,team:(team++)%2,name:"raul"})
+            require('./player2')({x:900,y:300,speed:100,team:(team++)%2,name:"puyol"})
 ];
 
 
