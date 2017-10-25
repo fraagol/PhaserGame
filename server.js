@@ -17,10 +17,12 @@ var players=[require('./player1')({x:300,y:310,speed:150,team:(team++)%2,name:"p
             require('./player1')({x:700,y:300,speed:100,team:(team++)%2,name:"xavi"}),
             require('./player2')({x:150,y:200,speed:200,team:(team++)%2,name:"ayala"}),
             require('./player2')({x:850,y:200,speed:200,team:(team++)%2,name:"iniesta"}),
-            require('./player2')({x:150,y:400,speed:100,team:(team++)%2,name:"iniesta"}),
+            require('./player2')({x:150,y:400,speed:100,team:(team++)%2,name:"javi"}),
             require('./player2')({x:850,y:400,speed:150,team:(team++)%2,name:"aurea"}),
             require('./player2')({x:100,y:300,speed:100,team:(team++)%2,name:"albelda"}),
-            require('./player2')({x:900,y:300,speed:100,team:(team++)%2,name:"puyol"})
+            require('./player2')({x:900,y:300,speed:100,team:(team++)%2,name:"puyol"}),
+            require('./player3')({x:900,y:300,speed:100,team:(team++)%2,name:"cristiano"})
+
 ];
 
 
@@ -85,12 +87,15 @@ var msg= 'var C='+JSON.stringify(C)+';';
 
   router.get('/sendJS',function(req,res){
     var text=req.query.text;
+        console.log(text);
+        console.time("a");
     var d= safe(text,{h:hola,w:world});
-    res.send('Holaaa '+d);
+    console.timeEnd("a");
+    res.send('Holaaa '+JSON.stringify(d));
   });
 
-  function hola() {
-    console.log("hola");
+  function hola(t) {
+    console.log(t);
     return 3;
   }
 

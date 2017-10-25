@@ -101,7 +101,9 @@ setInterval(function() {
     var circle = players[i];
 
   var playerData={x:circle.position[0], y:circle.position[1],id:i};
+  //console.time("b");
   var action=circle.player.action(ballData,playerData);
+  //console.timeEnd("b");
   switch (action.action) {
     case "STAY":
     circle.velocity[0]= 0;
@@ -110,7 +112,6 @@ setInterval(function() {
      circle.myRotation= angle;
       break;
     case "SHOOT":
-      console.log("SHOOT", action.x,action.y);
       if(ballOwner==i){
         world.addBody(ball);
         ballInWorld=true;
