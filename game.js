@@ -104,6 +104,11 @@ function setBall(b){
   if (worldStarted){
     ball.y=b.y;
     ball.x=b.x;
+    console.log(b);
+    if(b.ballOwner && b.ballOwner ===-1){
+      ownerCircle.x=2000;
+
+  }
   }else{
     console.log("World not started for ball");
   }

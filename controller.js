@@ -8,8 +8,16 @@ var text = '';
 
 socket.on('circle', function(msg) {
   msg.y = convertY(msg.y);
-  //console.log("received:",msg);
+  console.log("received:",msg);
   setCircle(msg);
+});
+
+socket.on('playersData',(msg)=>{
+  
+  msg.forEach(element => {
+   element.y = convertY(element.y);
+   setCircle(element);
+  });
 });
 
 socket.on('ball', function(msg) {
