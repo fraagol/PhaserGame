@@ -11,6 +11,7 @@ var router = express();
 var server = http.createServer(router);
 var io = socketio.listen(server);
 
+ 
 router.use(express.static(path.resolve(__dirname, '.')));
 var team=0;
 var players=[require('./player1')({x:300,y:310,speed:150,team:(team++)%2,name:"piojo"}),
@@ -25,13 +26,9 @@ var players=[require('./player1')({x:300,y:310,speed:150,team:(team++)%2,name:"p
 
 ];
 
-
-
-
 world.init(broadcast,players);
 
 world.start();
-
 
 var sockets = [];
 var messageCounter = 0;
